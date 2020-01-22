@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wizualizacja</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        background-color: black;
+        overflow: hidden;
+    }
+</style>
+
+<body>
+    <canvas id="canvas">
+
+    </canvas>
+</body>
+<script>
+    const imageURL = "https://upload.wikimedia.org/wikipedia/commons/e/e1/The_Lady_with_an_Ermine.jpg"
+
+    var can = document.getElementById("canvas");
+
+    const [width, height] = [window.innerWidth, window.innerHeight]
+
+    can.style.width = width + "px";
+    can.style.height = height + "px";
+
+    let ctx = can.getContext("2d");
+
+    ctx.canvas.width = width;
+    ctx.canvas.height = height;
+
+    let img = new Image;
+
+    const musicDuration = 2.5 * 60;
+
+
+
+
+    img.onload = function () {
+
+        const ratio = img.height / img.width
+
+        const imgWidth = width / 3;
+
+        const imgHeight = imgWidth * ratio;
+
+        const speedX = imgWidth / 90;
+
+        const speedY = imgHeight / 150
+
+        const imgStartX = width / 2 - imgWidth / 2, imgEndX = imgStartX + imgWidth - 10;
+        const imgStartY = height / 2 - imgHeight / 2, imgEndY = imgStartY + imgHeight;
+
+        ctx.drawImage(img, imgStartX, imgStartY, imgWidth, imgHeight);
+
+        let interval = null;
+
+        can.addEventListener("click", e => {
+            ctx.globalAlpha = 1;
+            if (interval) {
+                clearInterval(interval)
+            }
+
+            ctx.drawImage(img, imgStartX, imgStartY, imgWidth, imgHeight);
+
+            function animation() {
+                draw(pX, pY, speedY);
+                if (pX < imgEndX) {
+                    pX += speedX
+                } else if (pY < imgEndY) {
+                    pX = imgStartX
+                    pY += speedY
+                }
+            }
+
+            let pX = imgStartX, pY = imgStartY;
+            interval = setInterval(animation, 10)
+        })
+
+    };
+
+    img.src = imageURL;
+
+    function draw(posX, posY, h) {
+        ctx.globalAlpha = 0.2;
+        ctx.beginPath();
+        ctx.lineWidth = "0";
+        ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+        ctx.fillRect(posX, posY, 10, h);
+        ctx.stroke();
+    }
+
+
+</script>
+
+</html>
